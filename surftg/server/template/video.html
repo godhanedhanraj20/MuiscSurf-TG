@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://cdn.jsdelivr.net/gh/weebzone/weebzone/data/Surf-TG/src/ico2.png" type="image/x-icon">
+    <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/weebzone/weebzone/data/Surf-TG/src/ico2.png"
+        type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <title>Surf-TG: <!-- Filename --> </title>
+    <link rel="stylesheet" href="https://bootswatch.com/5/<!-- Theme -->/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/fluid-player@3.52.0/src/css/fluidplayer.min.css" rel="stylesheet">
+    <style>
+        body {
+            height: 100vh;
+            margin: 0;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+        }
+
+        .container {
+            margin: auto;
+            padding: 0px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .video-player {
+            max-width: 100%;
+            margin: auto;
+            padding-bottom: 10px;
+            height: 100vh;
+        }
+
+        .fluid_video_wrapper {
+            height: 100% !important;
+        }
+
+        #player {
+            width: 100%;
+            height: 100%;
+        }
+
+        .popup-ad {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            z-index: 1000;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow: auto;
+        }
+
+        .popup-ad-content {
+            text-align: center;
+        }
+
+        .popup-ad-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: white;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        @media (max-width: 992px) {
+            .video-player {
+                max-width: 100%;
+                margin: auto;
+                height: 100vh;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="video-player">
+        <video id="player">
+            <source src="" type="video/mp4" title="1080p" />
+            <source src="" type="video/mp4" title="720p" />
+            <source src="" type="video/mp4" title="480p" />
+            <source src="" type="video/mp4" title="360p" />
+        </video>
+    </div>
+    <div class="popup-ad" id="popupAd">
+        <div class="popup-ad-close" onclick="closePopupAd()">&times;</div>
+        <div class="popup-ad-content" id="popupAdContent">
+            <!-- Ad content will be inserted here -->
+        </div>
+    </div>
+    <footer class="footer mt-auto py-3 text-muted text-center" style="color: white;">
+        <div class="container d-flex justify-content-center align-items-center" style="width: 100%; padding: 0 10px;">
+            <p class="float-end">
+            <p>Made with <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-heart-fill" fill="red"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                        d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z" />
+                </svg> by <a href="https://github.com/weebzone" target="_blank">Karan Adhikari</a><br>
+                &copy; 2024 <a href="https://github.com/weebzone/Surf-TG" target="_blank">Surf-TG</a>. All Rights
+                Reserved.
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@1.4.12/dist/hls.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dashjs@4.7.0/dist/dash.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fluid-player@3.52.0/src/index.min.js"></script>
+    <script disable-devtool-auto src='https://cdn.jsdelivr.net/npm/disable-devtool'></script>
+
+    <script>
+        const videolink = window.location.href;
+        const url = new URL(videolink);
+        const domainUrl = url.origin;
+        const videoIdWithParams = videolink.split('/').pop();
+        const videoId = videoIdWithParams.split('?')[0];
+        const idParam = new URLSearchParams(window.location.search).get('id');
+        const hashParam = new URLSearchParams(window.location.search).get('hash');
+        const encodedName = encodeURIComponent('<!-- Filename -->');
+
+        const downloadlink = `${domainUrl}/${videoId}/${encodedName}?id=${idParam}&hash=${hashParam}`;
+
+        function updateVideoSource() {
+            const videoElement = document.getElementById('player');
+            const sources = videoElement.getElementsByTagName('source');
+            for (let source of sources) {
+                source.src = downloadlink;
+            }
+            videoElement.load();
+        }
+
+        const player = fluidPlayer('player', {
+            layoutControls: {
+                primaryColor: "#FF0000",
+                fillToContainer: true,
+                autoPlay: false,
+                playButtonShowing: true,
+                playPauseAnimation: true,
+                posterImage: "<!-- Poster -->",
+                posterImageSize: "contain",
+                allowDownload: true,
+                allowTheatre: true,
+                playbackRateEnabled: true,
+                allowPictureInPicture: true,
+                controlBar: {
+                    autoHide: true,
+                    autoHideTimeout: 3,
+                    animated: true
+                },
+                htmlOnPauseBlock: {
+                    html: null,
+                    height: null,
+                    width: null
+                },
+                logo: {
+                    imageUrl: null,
+                    position: 'top left',
+                    clickUrl: null,
+                    opacity: 0.8,
+                    mouseOverImageUrl: null,
+                    imageMargin: '2px',
+                    hideWithControls: false,
+                    showOverAds: false
+                }
+            },
+            vastOptions: {
+                adList: [],
+                skipButtonCaption: 'Skip ad in [seconds]',
+                skipButtonClickCaption: 'Skip ad <span class="skip_button_icon"></span>',
+                adText: null,
+                adTextPosition: 'top left',
+                adCTAText: 'Visit now!',
+                adCTATextPosition: 'bottom right',
+                vastTimeout: 5000,
+                showPlayButton: false,
+                maxAllowedVastTagRedirects: 3,
+                showProgressbarMarkers: false,
+                allowVPAID: false
+            }
+        });
+
+        function enterFullscreen() {
+            const videoElement = document.getElementById('player');
+            if (videoElement.requestFullscreen) {
+                videoElement.requestFullscreen();
+            } else if (videoElement.webkitRequestFullscreen) {
+                videoElement.webkitRequestFullscreen();
+            } else if (videoElement.msRequestFullscreen) {
+                videoElement.msRequestFullscreen();
+            }
+        }
+
+        function showPopupAd(adContent, duration) {
+            const popupAd = document.getElementById('popupAd');
+            const popupAdContent = document.getElementById('popupAdContent');
+            popupAdContent.innerHTML = adContent;
+            popupAd.style.display = 'block';
+            
+            setTimeout(() => {
+                closePopupAd();
+            }, duration * 1000);
+        }
+
+        function closePopupAd() {
+            const popupAd = document.getElementById('popupAd');
+            popupAd.style.display = 'none';
+        }
+
+        function schedulePopupAds() {
+            popupAds.forEach(ad => {
+                setTimeout(() => {
+                    showPopupAd(ad.content, ad.duration);
+                }, ad.time * 1000);
+            });
+        }
+
+        window.onload = function () {
+            updateVideoSource();
+            setTimeout(enterFullscreen, 1000);
+        };
+    </script>
+</body>
+
+</html>
